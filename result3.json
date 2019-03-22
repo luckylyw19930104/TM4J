@@ -1,0 +1,41 @@
+[
+  {
+    "uri": "features/DEM-T1.feature",
+    "id": "tc3",
+    "keyword": "Feature",
+    "name": "TC3",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "tc3;tc3",
+        "keyword": "Scenario",
+        "name": "TC1",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@TestCaseKey=DEM-T3",
+            "line": 2
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "Open the browser",
+            "line": 5,
+            "match": {
+              "location": "features/support.rb:1"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Failed (RuntimeError)\n./features/support.rb:4:in `\"Open the browser\"'\nfeatures/DEM-T1.feature:5:in `Given Open the browser'",
+              "duration": 217400
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

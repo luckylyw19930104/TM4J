@@ -1,0 +1,43 @@
+[
+  {
+    "uri": "features/DEM-T1.feature",
+    "id": "tc2",
+    "keyword": "Feature",
+    "name": "TC2",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "tc2;tc2",
+        "keyword": "Scenario",
+        "name": "TC2",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@TestCaseKey=DEM-T2",
+            "line": 2
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "*",
+            "name": "Open the browser",
+            "line": 5,
+            "output": [
+              "Success"
+            ],
+            "match": {
+              "location": "features/support.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72763
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

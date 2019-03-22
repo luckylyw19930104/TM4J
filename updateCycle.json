@@ -1,0 +1,1 @@
+{"status": "failed", "comment": "Failed (RuntimeError)\n./features/support.rb:4:in `\"Open the browser\"'\nfeatures/DEM-T1.feature:5:in `Given Open the browser'"}
