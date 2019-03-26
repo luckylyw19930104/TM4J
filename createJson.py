@@ -6,7 +6,7 @@ import re
 import sys
 import argparse
 
-path = "./" # specific folder
+path = "/Users/luckylyw19930104/Documents/jira_new" # specific folder
 testPath = "/Users/luckylyw19930104/Documents/output_results/result2.json"
 resultPath = "./httpBody.json"
 
@@ -14,21 +14,23 @@ resultPath = "./httpBody.json"
 def readOneJson(path):
     with open(path, "r") as j:
         data = json.load(j)
-        return data[0]
+        return data[0]['elements']
 
 # read custom fields that we need from json file
-def readFieldsFromJson(path):
+def readFieldsFromJson(path, i):
     Json = readOneJson(path) # TODO:
     fieldList = []
-    testCaseKey = Json['elements'][0]['tags'][0]['name']
+    testCaseKey = Json[i]['tags'][0]['name']
     middleValue = testCaseKey.split("=")
+    whetherTestCase = middleValue[0]
+    fieldList.append(whetherTestCase)
     testCaseKey = middleValue[1]
     #print(testCaseKey)
     fieldList.append(testCaseKey)
-    status = Json['elements'][0]['steps'][0]['result']['status']
+    status = Json[i]['steps'][0]['result']['status']
     fieldList.append(status)
     if status == "failed":
-        errorMsg = Json['elements'][0]['steps'][0]['result']['error_message']
+        errorMsg = Json[i]['steps'][0]['result']['error_message']
         fieldList.append(errorMsg)
     else:
         fieldList.append("passed")
@@ -54,16 +56,23 @@ def createOneJson(path):
     List = []
     for json in jsonList:
         jsonPath = path + "/" + json
-        fieldList = readFieldsFromJson(jsonPath)
-        testCaseKey = fieldList[0]
+        JsonFile = readOneJson(jsonPath)
+        #print(len(JsonFile))
+        for j in range(0, len(JsonFile), 1):
+            fieldList = readFieldsFromJson(jsonPath, j)
+            #print(fieldList[0])
+            if fieldList[0] != "@TestCaseKey":
+                continue
+            else:
+                testCaseKey = fieldList[1]
        # print(testCaseKey)
-        status = fieldList[1]
-        errorMsg = fieldList[2]
-        fieldDict = {}
-        fieldDict.update(testCaseKey=testCaseKey)
-        fieldDict.update(status=status)
-        fieldDict.update(comment=errorMsg)
-        List.append(fieldDict)
+                status = fieldList[2]
+                errorMsg = fieldList[3]
+                fieldDict = {}
+                fieldDict.update(testCaseKey=testCaseKey)
+                fieldDict.update(status=status)
+                fieldDict.update(comment=errorMsg)
+                List.append(fieldDict)
     return List
 
 # create one http body json according to TM4J API
@@ -82,9 +91,11 @@ def createBodyJson(path, projectKey, name, folder, resultPath):
 
 # main method for createJson
 
-projectKey = sys.argv[1]
-name = sys.argv[2]
-status = sys.argv[3]
-folder = sys.argv[3]
-createBodyJson(path, projectKey, name, folder, resultPath)
-
+#projectKey = sys.argv[1]
+#name = sys.argv[2]
+#status = sys.argv[3]
+#folder = sys.argv[3]
+#createBodyJson(path, projectKey, name, folder, resultPath)
+#print(findAllJson(path))
+#test = createOneJson(path)
+#print(len(test))

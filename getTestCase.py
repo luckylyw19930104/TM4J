@@ -5,8 +5,9 @@ import json
 import sys
 import createJson
 
+execCommand = "curl --basic --user %s"
 path = "existTestCycle.json"
-folderDirectory = "./"
+folderDirectory = "./jira_new"
 
 # get all test cases in specific test cycle and generate one case list
 def readJsonFile(path, testCycle):
@@ -19,7 +20,11 @@ def readJsonFile(path, testCycle):
     # get all test case key from get
     for i in range(0, len(data['items']), 1):
         testCaseKeyList.append(data['items'][i]['testCaseKey'])
-    return testCaseKeyList
+    if len(testCaseKeyList):
+        return testCaseKeyList
+    else:
+        testCaseKeyList = ["no file in this list"]
+        return testCaseKeyList
 
 # update the status and fields in existing test case
 def updateTestCase(testCaseKeyList, List, testCycle):
@@ -34,9 +39,10 @@ def updateTestCase(testCaseKeyList, List, testCycle):
                     middleList.append(testCase)
                     httpMethod = "-X PUT"
                     execUpdate(testCase, list, httpMethod, testCycle)
+    #print middleList
     diffList = sortlist(middleList, List)
     if diffList == None:
-        print("Can not find new test case to update")
+       print("Can not find new test case to update")
     else:
         for l in diffList:
             for list in List:
@@ -44,34 +50,37 @@ def updateTestCase(testCaseKeyList, List, testCycle):
                     httpMethod = "-X POST"
                     execUpdate(testCase, list, httpMethod, testCycle)
 
-
-
 # exec update command to update test case in specific cycle
 def execUpdate(testCase, list, httpMethod, testCycle):
-    command = "curl --basic --user luckylyw19930104:031118luckylyw -H Content-Type:application/json --data @updateCycle.json "
+    os.system("pwd")
+    command = "curl --basic --user luckylyw19930104:031118luckylyw -H Content-Type:application/json --data @jira/updateCycle.json "
     updateJson = {}
+    #print list
     updateJson.update(status=list['status'])
     updateJson.update(comment=list['comment'])
     updateBody = json.dumps(updateJson)
     #print(list['testCaseKey'])
     #print(updateBody)
-    with open("updateCycle.json", "w") as f:
+    with open("jira/updateCycle.json", "w") as f:
         f.write(updateBody)
     print(command + " " + httpMethod + " " + "http://localhost:8080/rest/atm/latest/testrun/" + testCycle + "/testcase/" + list['testCaseKey'] + "/testresult")
 
 # get test case not in cycle now, and post it to cycle
 def sortlist(middleList, List):
     l = []
-    print middleList
+    result = []
     for list in List:
         l.append(list['testCaseKey'])
-        print(l)
+        #print(l)
+    #print(l)
     if l == middleList:
         return None
     else:
-        list(set(l).difference(set(middleList)))
-        return l
-
+        for x in l:
+            if x not in middleList:
+                result.append(x)
+        #print result
+        return result
 
 
 
@@ -80,5 +89,9 @@ def sortlist(middleList, List):
 
 List = createJson.createOneJson(folderDirectory)
 #testCycle = sys.argv[1]
-testCaseKeyList = readJsonFile(path, testCycle="DEM-C16")
-updateTestCase(testCaseKeyList, List, testCycle="DEM-C16")
+print(List)
+testCaseKeyList = readJsonFile(path, testCycle="DEM-C20")
+updateTestCase(testCaseKeyList, List, testCycle="DEM-C20")
+
+
+#sortlist(middleList, List)
